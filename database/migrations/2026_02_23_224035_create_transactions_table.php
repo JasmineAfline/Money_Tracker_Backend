@@ -6,20 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            // Link to the wallet
+            $table->foreignId('wallet_id')->constrained()->onDelete('cascade');
+            
+            $table->decimal('amount', 15, 2);
+            $table->string('description')->nullable();
+            
+            // Enum restricts the 'type' to only these two options
+            $table->enum('type', ['income', 'expense']);
+            
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('transactions');

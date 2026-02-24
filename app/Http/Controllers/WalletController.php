@@ -1,24 +1,26 @@
+<?php
+
+namespace App\Http\Controllers;
+
 use App\Models\Wallet;
+use Illuminate\Http\Request;
 
-public function store(Request $request)
+class WalletController extends Controller
 {
-    $validated = $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'name' => 'required|string|max:255',
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string',
+            'balance' => 'required|numeric'
+        ]);
 
-    $wallet = Wallet::create($validated);
-    return response()->json($wallet, 201);
-}
+        $wallet = Wallet::create($validated);
+        return response()->json($wallet, 201);
+    }
 
-public function show($id)
-{
-    $wallet = Wallet::with('transactions')->findOrFail($id);
-
-    return response()->json([
-        'id' => $wallet->id,
-        'name' => $wallet->name,
-        'balance' => $wallet->balance,
-        'transactions' => $wallet->transactions
-    ]);
+    public function show($id)
+    {
+        return response()->json(Wallet::findOrFail($id));
+    }
 }
